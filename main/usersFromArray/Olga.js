@@ -1,0 +1,1 @@
+const user = {name: Olga, age: 32, status: false}
