@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ApiError } from "../errors/api.error";
-import { User } from "../models/User.model";
+import { ApiError } from "../errors";
+import { User } from "../models";
 
 class UserMiddleware {
   public async getByIdAndThrow(
