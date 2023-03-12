@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { configs } from "./configs";
-import { userRouter } from "./routes";
+import { authRouter, userRouter } from "./routes";
 import { IError } from "./types";
 
 const app = express();
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 app.use((err: IError, req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || 500;
 
@@ -22,7 +23,7 @@ app.use((err: IError, req: Request, res: Response, _next: NextFunction) => {
     status,
   });
 });
-
+mongoose.set("strictQuery", true);
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.API_URL);
   // eslint-disable-next-line no-console
