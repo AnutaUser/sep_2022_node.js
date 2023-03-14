@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { isObjectIdOrHexString } from "mongoose";
 
+import { EFrom } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
-import { IRequest } from "../types";
+import { IUser } from "../types";
 import { UserValidator } from "../validators";
 
 class UserMiddleware {
@@ -20,24 +21,25 @@ class UserMiddleware {
         return next(new ApiError("User not found", 422));
       }
 
-      res.locals = user;
+      res.locals = { user };
       next();
     } catch (e) {
       next(e);
     }
   }
+
   public getDynamicallyAndThrow(
     fieldName: string,
-    from = "body",
-    dbField = fieldName
+    from: EFrom = EFrom.body,
+    dbField: keyof IUser = "email"
   ) {
-    return async (req: IRequest, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const fieldValue = req[from][fieldName];
         const user = await User.findOne({ [dbField]: fieldValue });
 
         if (user) {
-          return next(new ApiError("email must be unique", 404090));
+          return next(new ApiError("email must be unique", 409));
         }
 
         next();
@@ -49,10 +51,10 @@ class UserMiddleware {
 
   public getDynamicallyOrThrow(
     fieldName: string,
-    from = "body",
-    dbField = fieldName
+    from: EFrom = EFrom.body,
+    dbField: keyof IUser = "email"
   ) {
-    return async (req: IRequest, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const fieldValue = req[from][fieldName];
         const user = await User.findOne({ [dbField]: fieldValue });
@@ -61,7 +63,7 @@ class UserMiddleware {
           return next(new ApiError("user not found", 422));
         }
 
-        req.res.locals = user;
+        req.res.locals = { user };
         next();
       } catch (e) {
         next(e);
@@ -115,6 +117,7 @@ class UserMiddleware {
       if (!isObjectIdOrHexString(req.params.userId)) {
         return next(new ApiError("Id is not valid", 400));
       }
+
       next();
     } catch (e) {
       next(e);
@@ -127,9 +130,11 @@ class UserMiddleware {
   ): Promise<void> {
     try {
       const { error } = UserValidator.loginUser.validate(req.body);
+
       if (error) {
         return next(new ApiError(error.message, 400));
       }
+
       next();
     } catch (e) {
       next(e);

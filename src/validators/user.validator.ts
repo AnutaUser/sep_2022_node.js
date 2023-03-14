@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 import { regexConstant } from "../constants";
-import { EGenders } from "../types";
+import { EGenders } from "../enums";
 
 export class UserValidator {
   private static userName = Joi.string().min(2).max(50).trim();

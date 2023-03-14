@@ -1,6 +1,6 @@
 import { ApiError } from "../errors";
 import { Token, User } from "../models";
-import { ILogin, ITokenPair, IUser } from "../types";
+import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
@@ -23,11 +23,11 @@ class AuthService {
       );
 
       if (!isMatched) {
-        throw new ApiError("wrong email or password", 401);
+        await new ApiError("wrong email or password", 401);
       }
 
       const tokenPair = tokenService.generateTokens({
-        id: user._id,
+        _id: user._id,
         name: user.name,
       });
 
@@ -37,6 +37,27 @@ class AuthService {
       });
 
       return tokenPair;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async refresh(
+    tokenInfo: ITokenPair,
+    jwtPayload: ITokenPayload
+  ): Promise<ITokenPair> {
+    try {
+      const tokens = tokenService.generateTokens({
+        _id: jwtPayload._id,
+        name: jwtPayload.name,
+      });
+
+      await Promise.all([
+        Token.create({ _user_id: jwtPayload._id, ...tokens }),
+        Token.deleteOne({ refreshToken: tokenInfo.refreshToken }),
+      ]);
+
+      return tokens;
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

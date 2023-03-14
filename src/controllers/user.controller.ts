@@ -23,7 +23,7 @@ class UserController {
     next: NextFunction
   ): Promise<Response<IUser>> {
     try {
-      const user = res.locals;
+      const { user } = res.locals;
 
       return res.json(user);
     } catch (e) {
