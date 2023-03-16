@@ -25,6 +25,11 @@ const userSchema = new Schema(
       enum: EGenders,
       type: String,
     },
+    phone: {
+      type: String,
+      required: [true, "Phone is required"],
+      trim: true,
+    },
   },
   {
     versionKey: false,

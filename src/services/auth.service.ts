@@ -1,9 +1,10 @@
-import { EEmailActions } from "../enums";
+import { EEmailActions, ESmsActions } from "../enums";
 import { ApiError } from "../errors";
 import { Token, User } from "../models";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
+import { smsService } from "./sms.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
@@ -13,7 +14,11 @@ class AuthService {
       const hashedPass = await passwordService.hash(password);
 
       await User.create({ ...user, password: hashedPass });
-      await emailService.sendMail(user.email, EEmailActions.WELCOME, name);
+
+      await Promise.all([
+        emailService.sendMail(user.email, EEmailActions.WELCOME, name),
+        smsService.sendSms(user.phone, ESmsActions.WELCOME),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

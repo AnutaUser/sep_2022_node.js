@@ -12,6 +12,7 @@ export class UserValidator {
   private static password = Joi.string().regex(regexConstant.PASSWORD);
   private static gender = Joi.valid(...Object.values(EGenders));
   private static age = Joi.number().min(2).max(130);
+  private static phone = Joi.string().regex(regexConstant.PHONE);
 
   static createUser = Joi.object({
     name: this.userName.required(),
@@ -19,6 +20,7 @@ export class UserValidator {
     gender: this.gender.required(),
     email: this.email.required(),
     password: this.password.required(),
+    phone: this.phone.required(),
   });
 
   static updateUser = Joi.object({

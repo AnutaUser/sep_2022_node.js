@@ -12,4 +12,8 @@ export const configs = {
 
   EMAIL_USER: process.env.EMAIL_USER || "user",
   EMAIL_PASS: process.env.EMAIL_PASS || "pass",
+
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || "twilioSID",
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN || "twilioToken",
+  TWILIO_SERVICE_SID: process.env.TWILIO_SERVICE_SID || "twilioServiceSid",
 };

@@ -1,6 +1,8 @@
 import { EEmailActions } from "../enums";
 
-export const emailTemplates = {
+export const emailTemplates: {
+  [key: string]: { subject: string; template: string };
+} = {
   [EEmailActions.WELCOME]: {
     subject: "Welcome on board",
     template: "welcome",
