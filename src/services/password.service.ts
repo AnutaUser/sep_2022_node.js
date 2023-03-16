@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 
 class PasswordService {
-  public async hashPassword(password: string): Promise<string> {
+  public async hash(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }
 
-  public async comparePassword(
+  public async compare(
     password: string,
     hashedPassword: string
   ): Promise<boolean> {

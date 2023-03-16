@@ -1,6 +1,8 @@
+import { EEmailActions } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
 import { IUser } from "../types";
+import { emailService } from "./email.service";
 
 class UserService {
   public async getAll(): Promise<IUser[]> {
@@ -34,9 +36,10 @@ class UserService {
     }
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: string, email: string, name: string): Promise<void> {
     try {
       await User.findByIdAndDelete(id);
+      await emailService.sendMail(email, EEmailActions.DELETE_ACCOUNT, name);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

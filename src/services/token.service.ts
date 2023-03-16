@@ -8,7 +8,7 @@ import { ITokenPair, ITokenPayload } from "../types";
 class TokenService {
   public generateTokens(payload: ITokenPayload): ITokenPair {
     const accessToken = jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
-      expiresIn: "10m",
+      expiresIn: "20m",
     });
 
     const refreshToken = jwt.sign(payload, configs.JWT_REFRESH_SECRET, {
@@ -39,7 +39,7 @@ class TokenService {
 
       return jwt.verify(token, secret) as ITokenPayload;
     } catch (e) {
-      throw new ApiError("Token not valid", 401);
+      throw new ApiError("Token not valid1", 401);
     }
   }
 }

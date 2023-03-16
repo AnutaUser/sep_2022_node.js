@@ -31,21 +31,21 @@ class UserController {
     }
   }
 
-  public async create(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response<ICommonResponse<IUser>>> {
-    try {
-      await userService.create(req.body);
-
-      return res.status(201).json({
-        message: "user created",
-      });
-    } catch (e) {
-      next(e);
-    }
-  }
+  // public async create(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<Response<ICommonResponse<IUser>>> {
+  //   try {
+  //     await userService.create(req.body);
+  //
+  //     return res.status(201).json({
+  //       message: "user created",
+  //     });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   public async update(
     req: Request,
@@ -73,8 +73,9 @@ class UserController {
   ): Promise<Response<void>> {
     try {
       const { userId } = req.params;
+      const { name, email } = req.res.locals.user;
 
-      await userService.delete(userId);
+      await userService.delete(userId, email, name);
 
       return res.sendStatus(204);
     } catch (e) {

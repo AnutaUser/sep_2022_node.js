@@ -1,15 +1,19 @@
+import { EEmailActions } from "../enums";
 import { ApiError } from "../errors";
 import { Token, User } from "../models";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
   public async register(user: IUser): Promise<void> {
     try {
-      const { password } = user;
-      const hashedPass = await passwordService.hashPassword(password);
+      const { password, name } = user;
+      const hashedPass = await passwordService.hash(password);
+
       await User.create({ ...user, password: hashedPass });
+      await emailService.sendMail(user.email, EEmailActions.WELCOME, name);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -17,13 +21,13 @@ class AuthService {
 
   public async login(loginData: ILogin, user: IUser): Promise<ITokenPair> {
     try {
-      const isMatched = await passwordService.comparePassword(
+      const isMatched = await passwordService.compare(
         loginData.password,
         user.password
       );
 
       if (!isMatched) {
-        await new ApiError("wrong email or password", 401);
+        throw new ApiError("wrong email or password", 401);
       }
 
       const tokenPair = tokenService.generateTokens({
@@ -58,6 +62,31 @@ class AuthService {
       ]);
 
       return tokens;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    try {
+      const user = await User.findById(userId);
+
+      const isMatched = await passwordService.compare(
+        oldPassword,
+        user.password
+      );
+
+      if (!isMatched) {
+        throw new ApiError("Wrong old password", 400);
+      }
+
+      const hashedNewPass = await passwordService.hash(newPassword);
+
+      await User.updateOne({ _id: user._id }, { password: hashedNewPass });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

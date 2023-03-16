@@ -19,6 +19,7 @@ class AuthMiddleware {
       }
 
       const jwtPayload = tokenService.checkToken(accessToken);
+
       const tokenInfo = await Token.findOne({ accessToken });
 
       if (!tokenInfo) {

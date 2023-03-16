@@ -1,0 +1,20 @@
+.header {
+    background: darkcyan;
+    height: 50px;
+    width: 100%;
+    color: aliceblue;
+    font-size: 20px;
+    margin: 0;
+}
+
+.div {
+    background: #e3c2ac;
+    text-align: center;
+    margin: 0;
+}
+
+.footer {
+    background: darkcyan;
+    height: 50px;
+    width: 100%;
+}
