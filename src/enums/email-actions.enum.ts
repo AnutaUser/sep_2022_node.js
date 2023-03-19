@@ -3,4 +3,5 @@ export enum EEmailActions {
   FORGOT_PASSWORD,
   DELETE_ACCOUNT,
   LOGOUT,
+  ACTIVATE,
 }

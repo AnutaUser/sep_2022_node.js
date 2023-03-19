@@ -1,6 +1,8 @@
 import { EEmailActions } from "../enums";
 
-export const emailTemplates = {
+export const emailTemplates: {
+  [key: string]: { subject: string; template: string };
+} = {
   [EEmailActions.WELCOME]: {
     subject: "Welcome on board",
     template: "welcome",
@@ -19,5 +21,10 @@ export const emailTemplates = {
   [EEmailActions.DELETE_ACCOUNT]: {
     subject: "Account was deleted",
     template: "delete-account",
+  },
+
+  [EEmailActions.ACTIVATE]: {
+    subject: "Account was activated",
+    template: "activate",
   },
 };

@@ -39,7 +39,9 @@ class UserService {
   public async delete(id: string, email: string, name: string): Promise<void> {
     try {
       await User.findByIdAndDelete(id);
-      await emailService.sendMail(email, EEmailActions.DELETE_ACCOUNT, name);
+      await emailService.sendMail(email, EEmailActions.DELETE_ACCOUNT, {
+        name,
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

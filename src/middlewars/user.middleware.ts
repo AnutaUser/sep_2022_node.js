@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { isObjectIdOrHexString } from "mongoose";
 
 import { EFrom } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
 import { IUser } from "../types";
-import { UserValidator } from "../validators";
 
 class UserMiddleware {
   public async getByIdOrThrow(
@@ -69,94 +67,6 @@ class UserMiddleware {
         next(e);
       }
     };
-  }
-  public async isUserValidForCreate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const { error, value } = UserValidator.createUser.validate(req.body);
-
-      if (error) {
-        return next(new ApiError(error.message, 400));
-      }
-
-      req.body = value;
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  public async isUserValidForUpdate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const { error, value } = UserValidator.updateUser.validate(req.body);
-
-      if (error) {
-        return next(new ApiError(error.message, 400));
-      }
-
-      req.body = value;
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  public async isIdValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      if (!isObjectIdOrHexString(req.params.userId)) {
-        return next(new ApiError("Id is not valid", 400));
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-  public async isLoginValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const { error } = UserValidator.loginUser.validate(req.body);
-
-      if (error) {
-        return next(new ApiError(error.message, 400));
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  public async isChangePasswordValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const { error } = UserValidator.changePass.validate(req.body);
-
-      if (error) {
-        return next(new ApiError(error.message, 400));
-      }
-
-      next();
-    } catch (e) {
-      next(e);
-    }
   }
 }
 

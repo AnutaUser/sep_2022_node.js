@@ -1,9 +1,15 @@
-import { EEmailActions } from "../enums";
+import {
+  EActionTokenType,
+  EEmailActions,
+  ESmsActions,
+  EUserStatus,
+} from "../enums";
 import { ApiError } from "../errors";
-import { Token, User } from "../models";
+import { Action, Token, User } from "../models";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
+import { smsService } from "./sms.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
@@ -13,7 +19,11 @@ class AuthService {
       const hashedPass = await passwordService.hash(password);
 
       await User.create({ ...user, password: hashedPass });
-      await emailService.sendMail(user.email, EEmailActions.WELCOME, name);
+
+      await Promise.all([
+        emailService.sendMail(user.email, EEmailActions.WELCOME, { name }),
+        smsService.sendSms(user.phone, ESmsActions.WELCOME),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -87,6 +97,73 @@ class AuthService {
       const hashedNewPass = await passwordService.hash(newPassword);
 
       await User.updateOne({ _id: user._id }, { password: hashedNewPass });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async forgotPassword(user: IUser): Promise<void> {
+    try {
+      const actionToken = tokenService.generateActionToken(
+        { _id: user._id },
+        EActionTokenType.forgot,
+        "7d"
+      );
+
+      await Action.create({
+        actionToken,
+        actionType: EActionTokenType.forgot,
+        _user_id: user._id,
+      });
+
+      await emailService.sendMail(user.email, EEmailActions.FORGOT_PASSWORD, {
+        token: actionToken,
+        name: user.name,
+      });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async setForgotPassword(password: string, id: string): Promise<void> {
+    try {
+      const hashedPass = await passwordService.hash(password);
+
+      await User.updateOne({ _id: id }, { password: hashedPass });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async sendActivateToken(user: IUser): Promise<void> {
+    try {
+      const actionToken = tokenService.generateActionToken(
+        { _id: user._id },
+        EActionTokenType.activate,
+        "7d"
+      );
+
+      await Action.create({
+        actionToken,
+        actionType: EActionTokenType.activate,
+        _user_id: user._id,
+      });
+
+      await emailService.sendMail(user.email, EEmailActions.ACTIVATE, {
+        token: actionToken,
+        name: user.name,
+      });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async activate(userId: string): Promise<void> {
+    try {
+      await User.updateOne(
+        { _id: userId },
+        { $set: { status: EUserStatus.active } }
+      );
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

@@ -3,8 +3,8 @@ import nodemailer, { Transporter } from "nodemailer";
 import * as path from "path";
 
 import { configs } from "../configs";
+import { emailTemplates } from "../constants";
 import { EEmailActions } from "../enums";
-import { emailTemplates } from "../statics";
 
 class EmailService {
   private transporter: Transporter;
@@ -12,7 +12,6 @@ class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      from: "No reply",
       service: "gmail",
       auth: {
         user: configs.EMAIL_USER,
@@ -24,15 +23,7 @@ class EmailService {
       views: {
         root: path.join(process.cwd(), "src", "statics", "views"),
         options: {
-          map: {
-            layoutsDir: path.join(process.cwd(), "src", "statics", "layouts"),
-            partialsDir: path.join(process.cwd(), "src", "statics", "partials"),
-          },
           extension: "hbs",
-          engineSource: {
-            layoutsDir: path.join(process.cwd(), "src", "statics", "layouts"),
-            partialsDir: path.join(process.cwd(), "src", "statics", "partials"),
-          },
         },
       },
 
@@ -48,19 +39,27 @@ class EmailService {
   public async sendMail(
     email: string,
     emailAction: EEmailActions,
-    name: string
+    locals: Record<string, string> = {}
   ) {
-    const templateInfo = emailTemplates[emailAction];
+    try {
+      const templateInfo = emailTemplates[emailAction];
 
-    const html = await this.templateParser.render(templateInfo.template);
+      locals.frontend_url = configs.FRONTEND_URL;
 
-    return this.transporter.sendMail({
-      from: "No reply",
-      to: email,
-      subject: templateInfo.subject,
-      html,
-      text: name,
-    });
+      const html = await this.templateParser.render(
+        templateInfo.template,
+        locals
+      );
+
+      return this.transporter.sendMail({
+        from: "No reply",
+        to: email,
+        subject: templateInfo.subject,
+        html,
+      });
+    } catch (e) {
+      console.error(e.message);
+    }
   }
 }
 
