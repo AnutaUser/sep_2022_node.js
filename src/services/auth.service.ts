@@ -125,11 +125,19 @@ class AuthService {
     }
   }
 
-  public async setForgotPassword(password: string, id: string): Promise<void> {
+  public async setForgotPassword(
+    password: string,
+    userId: string
+  ): Promise<void> {
     try {
       const hashedPass = await passwordService.hash(password);
 
-      await User.updateOne({ _id: id }, { password: hashedPass });
+      await User.updateOne({ _id: userId }, { password: hashedPass });
+
+      await Token.deleteMany({
+        _user_id: userId,
+        actionType: EActionTokenType.forgot,
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -164,6 +172,11 @@ class AuthService {
         { _id: userId },
         { $set: { status: EUserStatus.active } }
       );
+
+      await Token.deleteMany({
+        _user_id: userId,
+        tokenType: EActionTokenType.activate,
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
