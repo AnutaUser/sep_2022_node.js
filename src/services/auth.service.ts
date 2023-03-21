@@ -6,6 +6,7 @@ import {
 } from "../enums";
 import { ApiError } from "../errors";
 import { Action, Token, User } from "../models";
+import { OldPassword } from "../models/Old-password.model";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -120,6 +121,8 @@ class AuthService {
         token: actionToken,
         name: user.name,
       });
+
+      await OldPassword.create({ _user_id: user._id, password: user.password });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -148,7 +151,7 @@ class AuthService {
       const actionToken = tokenService.generateActionToken(
         { _id: user._id },
         EActionTokenType.activate,
-        "7d"
+        "1d"
       );
 
       await Action.create({

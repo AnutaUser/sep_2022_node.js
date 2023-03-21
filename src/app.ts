@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { configs } from "./configs";
+import { cronRunner } from "./crons";
 import { ApiError } from "./errors";
 import { authRouter, userRouter } from "./routes";
 
@@ -26,6 +27,7 @@ app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
 mongoose.set("strictQuery", true);
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.API_URL);
+  cronRunner();
   // eslint-disable-next-line no-console
   console.log(`Server started on port: ${configs.PORT}`);
 });

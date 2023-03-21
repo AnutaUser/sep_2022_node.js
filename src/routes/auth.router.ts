@@ -47,6 +47,7 @@ router.post(
 router.put(
   "/password/forgot/:token",
   authMiddleware.isActionTokenValid(EActionTokenType.forgot),
+  authMiddleware.checkOldPass,
   authController.setForgotPassword
 );
 

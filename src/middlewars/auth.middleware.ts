@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { EActionTokenType, ETokenType } from "../enums";
 import { ApiError } from "../errors";
 import { Action, Token } from "../models";
-import { tokenService } from "../services";
+import { OldPassword } from "../models/Old-password.model";
+import { passwordService, tokenService } from "../services";
 
 class AuthMiddleware {
   public async isAccessTokenValid(
@@ -88,6 +89,37 @@ class AuthMiddleware {
         next(e);
       }
     };
+  }
+
+  public async checkOldPass(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { body } = req;
+      const { tokenInfo } = req.res.locals;
+
+      const oldPasswords = await OldPassword.find({
+        _user_id: tokenInfo._user_id,
+      });
+      console.log(oldPasswords);
+      if (!oldPasswords) return next();
+
+      await Promise.all(
+        oldPasswords.map(async (data) => {
+          const isMatched = await passwordService.compare(
+            body.password,
+            data.password
+          );
+          if (isMatched) {
+            return next(
+              new ApiError("This pass was used, please enter new pass", 409)
+            );
+          }
+        })
+      );
+
+      next();
+    } catch (e) {
+      next(e);
+    }
   }
 }
 
