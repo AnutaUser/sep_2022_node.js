@@ -20,6 +20,7 @@ const tokensSchema = new Schema(
   },
   {
     versionKey: false,
+    timestamps: true,
   }
 );
 
