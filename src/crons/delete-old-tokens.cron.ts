@@ -11,4 +11,4 @@ const tokensRemover = async (): Promise<void> => {
   await Token.deleteMany({ createdAt: { $lte: monthAgo } });
 };
 
-export const removeOldTokens = new CronJob("* * * * * * ", tokensRemover);
+export const removeOldTokens = new CronJob("0 0 * * * * ", tokensRemover);
