@@ -18,9 +18,12 @@ const reminder = async (): Promise<void> => {
   const users = await User.find({ _id: { $in: ids } });
 
   const phones = users.map((user) => user.phone);
+  const names = users.map((user) => user.name);
 
   phones.map(async (phone) => {
-    await smsService.sendSms(phone, ESmsActions.REMINDER);
+    names.map(async (userName) => {
+      await smsService.sendSms(phone, ESmsActions.REMINDER, userName);
+    });
   });
 };
 

@@ -23,7 +23,7 @@ class AuthService {
 
       await Promise.all([
         emailService.sendMail(user.email, EEmailActions.WELCOME, { name }),
-        smsService.sendSms(user.phone, ESmsActions.WELCOME),
+        smsService.sendSms(user.phone, ESmsActions.WELCOME, name),
       ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);

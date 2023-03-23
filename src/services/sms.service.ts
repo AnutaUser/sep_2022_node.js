@@ -12,7 +12,12 @@ class SmsService {
       configs.TWILIO_AUTH_TOKEN
     )
   ) {}
-  public async sendSms(phone: string, smsAction: ESmsActions) {
+
+  public async sendSms(
+    phone: string,
+    smsAction: ESmsActions,
+    userName: string
+  ) {
     const message = smsTemplates[smsAction];
 
     try {
@@ -20,6 +25,7 @@ class SmsService {
         body: message,
         messagingServiceSid: configs.TWILIO_SERVICE_SID,
         to: phone,
+        contentSid: userName,
       });
     } catch (e) {
       throw new ApiError(e.message, e.status);
