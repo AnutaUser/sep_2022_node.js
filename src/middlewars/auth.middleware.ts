@@ -99,7 +99,7 @@ class AuthMiddleware {
       const oldPasswords = await OldPassword.find({
         _user_id: tokenInfo._user_id,
       });
-      console.log(oldPasswords);
+
       if (!oldPasswords) return next();
 
       await Promise.all(

@@ -1,7 +1,7 @@
 import { EEmailActions } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
-import { IUser } from "../types";
+import { IPaginationResponse, IQuery, IUser } from "../types";
 import { emailService } from "./email.service";
 
 class UserService {
@@ -13,9 +13,50 @@ class UserService {
     }
   }
 
+  public async getAllWithPagination(
+    query: IQuery
+  ): Promise<IPaginationResponse<IUser>> {
+    try {
+      const queryStr = JSON.stringify(query);
+      const queryObj = JSON.parse(
+        queryStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`)
+      );
+
+      const {
+        page = 1,
+        limit = 5,
+        sortedBy = "createdAt",
+        ...searchObj
+      } = queryObj;
+
+      const skip = limit * (page - 1);
+
+      const data = await User.find(searchObj)
+        .skip(skip)
+        .limit(limit)
+        .sort(sortedBy)
+        .lean();
+
+      const count = await User.count();
+      //
+      // const users = await User.findByName("Ania");
+      // console.log(users);
+
+      return {
+        page: +page,
+        perPage: +limit,
+        itemsCount: count,
+        itemsFound: data.length,
+        data,
+      };
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
   public async getById(id: string): Promise<IUser> {
     try {
-      return User.findById(id);
+      return await User.findById(id);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

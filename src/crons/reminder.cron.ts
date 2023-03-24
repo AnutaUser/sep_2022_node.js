@@ -27,4 +27,4 @@ const reminder = async (): Promise<void> => {
   });
 };
 
-export const remindSMS = new CronJob("* * * * * *", reminder);
+export const remindSMS = new CronJob("0 0 * * * *", reminder);

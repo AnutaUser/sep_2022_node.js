@@ -15,6 +15,9 @@ class UserMiddleware {
       const { userId } = req.params;
       const user = await User.findById(userId);
 
+      // console.log(user.nameWithAge());
+      // console.log(user.nameWithGender);
+
       if (!user) {
         return next(new ApiError("User not found", 422));
       }
