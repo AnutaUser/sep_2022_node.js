@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { configs } from "./configs";
 import { cronRunner } from "./crons";
 import { ApiError } from "./errors";
-import { authRouter, userRouter } from "./routes";
+import { authRouter, carRouter, userRouter } from "./routes";
 
 const app = express();
 
@@ -14,8 +14,9 @@ config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/cars", carRouter);
+app.use("/users", userRouter);
 app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || 500;
 
