@@ -1,54 +1,24 @@
 import { EEmailActions } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
+import { userRepository } from "../repositories";
 import { IPaginationResponse, IQuery, IUser } from "../types";
 import { emailService } from "./email.service";
 
 class UserService {
-  public async getAll(): Promise<IUser[]> {
-    try {
-      return User.find();
-    } catch (e) {
-      throw new ApiError(e.message, e.status);
-    }
-  }
+  // public async getAll(): Promise<IUser[]> {
+  //   try {
+  //     return User.find();
+  //   } catch (e) {
+  //     throw new ApiError(e.message, e.status);
+  //   }
+  // }
 
   public async getAllWithPagination(
     query: IQuery
   ): Promise<IPaginationResponse<IUser>> {
     try {
-      const queryStr = JSON.stringify(query);
-      const queryObj = JSON.parse(
-        queryStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`)
-      );
-
-      const {
-        page = 1,
-        limit = 5,
-        sortedBy = "createdAt",
-        ...searchObj
-      } = queryObj;
-
-      const skip = limit * (page - 1);
-
-      const data = await User.find(searchObj)
-        .skip(skip)
-        .limit(limit)
-        .sort(sortedBy)
-        .lean();
-
-      const count = await User.count();
-      //
-      // const users = await User.findByName("Ania");
-      // console.log(users);
-
-      return {
-        page: +page,
-        perPage: +limit,
-        itemsCount: count,
-        itemsFound: data.length,
-        data,
-      };
+      return await userRepository.getAllWithPagination(query);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

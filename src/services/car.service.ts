@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 
 import { ApiError } from "../errors";
 import { Car } from "../models";
+import { carRepository } from "../repositories";
 import { ICar } from "../types";
 
 class CarService {
@@ -15,31 +16,7 @@ class CarService {
 
   public async getById(userId: string, carId: string): Promise<ICar> {
     try {
-      // return await Car.findById(carId).populate("user");
-
-      const result = await Car.aggregate([
-        {
-          $match: {
-            _id: carId,
-            user: new Types.ObjectId(userId),
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "user",
-            foreignField: "_id",
-            as: "creator",
-          },
-        },
-        {
-          $unwind: {
-            path: "$creator",
-          },
-        },
-      ]);
-
-      return result[0];
+      return await carRepository.getByCarAndUser(userId, carId);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
