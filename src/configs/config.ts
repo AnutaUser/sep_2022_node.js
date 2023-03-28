@@ -20,4 +20,13 @@ export const configs = {
   TWILIO_SERVICE_SID: process.env.TWILIO_SERVICE_SID || "twilioServiceSid",
 
   FRONTEND_URL: process.env.FRONTEND_URL || "https://google.com",
+
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
+
+  AWS_S3_NAME: process.env.AWS_S3_NAME,
+  AWS_S3_PASSWORD: process.env.AWS_S3_PASSWORD,
+  AWS_S3_URL: process.env.AWS_S3_URL,
+  AWS_S3_REGION: process.env.AWS_S3_REGION,
+  AWS_S3_ACL: process.env.AWS_S3_ACL,
 };

@@ -31,6 +31,10 @@ const userSchema = new Schema(
       required: [true, "Phone is required"],
       trim: true,
     },
+    avatar: {
+      type: String,
+      required: false,
+    },
     status: {
       type: String,
       enum: EUserStatus,

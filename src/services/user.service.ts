@@ -1,9 +1,12 @@
-import { EEmailActions } from "../enums";
+import { UploadedFile } from "express-fileupload";
+
+import { EEmailActions, EPhotoType } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
 import { userRepository } from "../repositories";
 import { IPaginationResponse, IQuery, IUser } from "../types";
 import { emailService } from "./email.service";
+import { s3Service } from "./s3.service";
 
 class UserService {
   // public async getAll(): Promise<IUser[]> {
@@ -39,6 +42,7 @@ class UserService {
       throw new ApiError(e.message, e.status);
     }
   }
+
   public async update(id: string, user: IUser): Promise<void> {
     try {
       await User.findByIdAndUpdate(id, { ...user }, { new: true });
@@ -53,6 +57,27 @@ class UserService {
       await emailService.sendMail(email, EEmailActions.DELETE_ACCOUNT, {
         name,
       });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async uploadAvatar(
+    file: UploadedFile,
+    userId: string
+  ): Promise<IUser> {
+    try {
+      const filePath = await s3Service.uploadPhoto(
+        file,
+        EPhotoType.user,
+        userId
+      );
+
+      return await User.findByIdAndUpdate(
+        userId,
+        { avatar: filePath },
+        { new: true }
+      );
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

@@ -3,6 +3,7 @@ import { Router } from "express";
 import { userController } from "../controllers";
 import {
   authMiddleware,
+  avatarMiddleware,
   commonMiddleware,
   userMiddleware,
 } from "../middlewars";
@@ -27,6 +28,15 @@ router.patch(
   commonMiddleware.isBodyValid(UserValidator.updateUser),
   userMiddleware.getByIdOrThrow,
   userController.update
+);
+
+router.patch(
+  "/:userId/avatar",
+  authMiddleware.isAccessTokenValid,
+  commonMiddleware.isIdValid("userId"),
+  userMiddleware.getByIdOrThrow,
+  avatarMiddleware.isAvatarValid,
+  userController.uploadAvatar
 );
 
 router.delete(

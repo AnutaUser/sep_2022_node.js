@@ -23,6 +23,7 @@ export interface IUser {
   password: string;
   gender: string;
   phone: string;
+  photo?: string;
 }
 
 export interface IUserMethods {
