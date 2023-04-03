@@ -40,6 +40,13 @@ router.patch(
 );
 
 router.delete(
+  "/:userId/avatar",
+  authMiddleware.isAccessTokenValid,
+  userMiddleware.getByIdOrThrow,
+  userController.deleteAvatar
+);
+
+router.delete(
   "/:userId",
   authMiddleware.isAccessTokenValid,
   commonMiddleware.isIdValid("userId"),

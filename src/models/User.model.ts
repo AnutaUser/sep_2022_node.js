@@ -31,7 +31,7 @@ const userSchema = new Schema(
       required: [true, "Phone is required"],
       trim: true,
     },
-    avatar: {
+    photo: {
       type: String,
       required: false,
     },

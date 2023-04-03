@@ -1,4 +1,4 @@
 export enum EPhotoType {
-  car,
-  user,
+  car = "car",
+  user = "user",
 }

@@ -62,20 +62,39 @@ class UserService {
     }
   }
 
-  public async uploadAvatar(
-    file: UploadedFile,
-    userId: string
-  ): Promise<IUser> {
+  public async uploadAvatar(file: UploadedFile, user: IUser): Promise<IUser> {
     try {
       const filePath = await s3Service.uploadPhoto(
         file,
         EPhotoType.user,
-        userId
+        user._id
       );
 
+      if (user.photo) {
+        await s3Service.deletePhoto(user.photo);
+      }
+
       return await User.findByIdAndUpdate(
-        userId,
-        { avatar: filePath },
+        user._id,
+        { photo: filePath },
+        { new: true }
+      );
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async deleteAvatar(user: IUser): Promise<IUser> {
+    try {
+      if (!user.photo) {
+        throw new ApiError("Avatar doesnt exist", 422);
+      }
+
+      await s3Service.deletePhoto(user.photo);
+
+      return await User.findByIdAndUpdate(
+        user._id,
+        { $unset: { photo: true } },
         { new: true }
       );
     } catch (e) {
