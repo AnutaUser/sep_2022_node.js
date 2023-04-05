@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div>
+</div>
+
+<input placeholder="message"/>
+<button>send message</button>
+<button class="join">Join room</button>
+<button class="leave">Leave room</button>
+
+<script type="module">
+    import {io} from 'https://cdn.socket.io/4.4.1/socket.io.esm.min.js';
+
+    const socket = io('http://localhost:4444');
+
+    // socket.on("user:connected", (data) => {
+    //     document.write(data.message);
+    // });
+
+    socket.on('message:get', (text) => {
+        const p = document.createElement('p');
+        p.innerText = text;
+        document.querySelector('div').appendChild(p);
+    });
+
+    const button = document.getElementsByTagName('button')[0];
+    button.onclick = () => {
+        const text = document.getElementsByTagName('input')[0].value;
+        socket.emit('message:send', text);
+    };
+
+    const joinRoom = document.getElementsByClassName('join')[0];
+    joinRoom.onclick = () => {
+        socket.emit('join:room', {roomName: 'sep_2022'});
+    };
+
+    socket.on('user:joined', (text) => {
+        const p = document.createElement('p');
+        p.innerText = JSON.stringify(text);
+        document.querySelector('div').appendChild(p);
+    });
+
+    const leaveRoom = document.getElementsByClassName('leave')[0];
+    leaveRoom.onclick = () => {
+        socket.emit('leave:room', {roomName: 'sep_2022'});
+    };
+
+    socket.on('user:leave', (text) => {
+        const p = document.createElement('p');
+        p.innerText = JSON.stringify(text);
+        document.querySelector('div').appendChild(p);
+    }, (error) => {
+        alert(error);
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "SEP_2022_NODE.JS",
+    "description": "My API",
+    "contact": {
+      "name": "Anna Bezkorovaina",
+      "email": "bezkorovainaanna048@gmail.com",
+      "url": "https://google.com"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "users_list",
+        "summary": "Get users list",
+        "description": "Get all users",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all users",
+            "schema": {
+              "$ref": "#/definitions/UsersWithPagination"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "user_read",
+        "summary": "Get user by userId",
+        "description": "Get user by userId",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "fghbjnkmljnhbgtfvrdesdcftvgtb"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "641b2bf5616064935629074a"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user by id",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "No token provided"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "user_update",
+        "summary": "Partial update user by id",
+        "description": "Partial update user by id",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "fghbjnkmljnhbgtfvrdesdcftvgtb"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "641b2bf5616064935629074a"
+            }
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserForUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "update",
+            "schema": {
+              "$ref": "#/definitions/UserForUpdate"
+            }
+          },
+          "400": {
+            "description": "Not valid ID"
+          },
+          "401": {
+            "description": "Not valid token"
+          },
+          "422": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "user_delete",
+        "summary": "Delete user by id",
+        "description": "Delete user by id",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "fghbjnkmljnhbgtfvrdesdcftvgtb"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "641b2bf5616064935629074a"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Not valid ID"
+          },
+          "401": {
+            "description": "Not valid token"
+          },
+          "422": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/{userId}/avatar": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "update_avatar",
+        "summary": "Update user avatar",
+        "description": "Update user avatar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "fghbjnkmljnhbgtfvrdesdcftvgtb"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "641b2bf5616064935629074a"
+            }
+          },
+          {
+            "in": "formData",
+            "name": "photo",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated avatar"
+          },
+          "400": {
+            "description": "Not valid ID"
+          },
+          "401": {
+            "description": "Not valid token"
+          },
+          "422": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "delete_avatar",
+        "summary": "Delete user avatar",
+        "description": "Delete user avatar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "fghbjnkmljnhbgtfvrdesdcftvgtb"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "641b2bf5616064935629074a"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Avatar was successful delete"
+          },
+          "400": {
+            "description": "Not valid ID"
+          },
+          "401": {
+            "description": "Not valid token"
+          },
+          "422": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/cars": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "operationId": "cars_list",
+        "summary": "Get all cars",
+        "description": "Get all cars",
+        "responses": {
+          "200": {
+            "description": "Get all cars",
+            "schema": {
+              "$ref": "#/definition/CarWithAuth"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "operationId": "cars_create",
+        "summary": "Create new car",
+        "description": "Create new car",
+        "responses": {
+          "200": {
+            "description": "Create new car",
+            "examples": {
+              "brand": "BMV",
+              "price": "50000",
+              "year": "2015"
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "register_user",
+        "summary": "Register User",
+        "description": "Register User",
+        "responses": {
+          "200": {
+            "description": "Get all cars",
+            "schema": {
+              "$ref": "#/definition/CarWithAuth"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "login_user",
+        "summary": "Login User",
+        "description": "Login User",
+        "responses": {
+          "200": {
+            "description": "Login user",
+            "schema": {
+              "$ref": "#/definition/CarWithAuth"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CarWithAuth": {
+      "required": [
+        "brand",
+        "price",
+        "year"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "brand": {
+          "title": "Brand",
+          "type": "string",
+          "pattern": "^[a-zA-Zа-яА-яёЁіІїЇ]{1,20}$",
+          "maxLength": 20,
+          "minLength": 1
+        },
+        "price": {
+          "title": "Price",
+          "type": "integer",
+          "maximum": 1000000,
+          "minimum": 0
+        },
+        "year": {
+          "title": "Year",
+          "type": "integer",
+          "maximum": 2023,
+          "minimum": 1990
+        }
+      }
+    },
+    "UsersWithPagination": {
+      "required": [
+        "page",
+        "perPage",
+        "itemsCount",
+        "itemsFound",
+        "data"
+      ],
+      "type": "object",
+      "properties": {
+        "page": {
+          "title": "Current page",
+          "type": "integer"
+        },
+        "perPage": {
+          "title": "Quantity per page",
+          "type": "integer"
+        },
+        "itemsCount": {
+          "title": "Total count",
+          "type": "integer"
+        },
+        "itemsFound": {
+          "title": "Found items",
+          "type": "integer"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "email",
+        "password",
+        "name",
+        "age",
+        "gender",
+        "phone"
+      ],
+      "type": "object",
+      "properties": {
+        "_id": {
+          "title": "id",
+          "type": "string",
+          "readOnly": true
+        },
+        "name": {
+          "title": "User name",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "age": {
+          "title": "Age",
+          "type": "number",
+          "minimum": 2,
+          "maximum": 130
+        },
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+          "example": "email@.com"
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "pattern": "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%_*#?&])[A-Za-z\\d@$_!%*#?&]{8,20}$"
+        },
+        "gender": {
+          "title": "Gender",
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "mixes"
+          ]
+        },
+        "phone": {
+          "title": "Phone",
+          "type": "string",
+          "pattern": "^[+]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$",
+          "example": "+380123456789"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string",
+          "readOnly": true,
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        "photo": {
+          "title": "Photo",
+          "type": "string",
+          "format": "uri"
+        },
+        "createdAt": {
+          "title": "Created",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updatedAt": {
+          "title": "Updated",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "UserForUpdate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "User name",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "age": {
+          "title": "Age",
+          "type": "number",
+          "minimum": 2,
+          "maximum": 130
+        },
+        "gender": {
+          "title": "Gender",
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "mixes"
+          ]
+        },
+        "phone": {
+          "title": "Phone",
+          "type": "string",
+          "pattern": "^[+]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$",
+          "example": "+380123456789"
+        },
+        "photo": {
+          "title": "Photo",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

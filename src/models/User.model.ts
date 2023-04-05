@@ -28,7 +28,7 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: [true, "Phone is required"],
+      required: false,
       trim: true,
     },
     photo: {

@@ -121,7 +121,7 @@ class UserController {
 
       const response = userMapper.toResponse(user);
 
-      return res.status(201).json(response);
+      return res.status(204).json(response);
     } catch (e) {
       next(e);
     }
