@@ -524,7 +524,7 @@
           "title": "Phone",
           "type": "string",
           "pattern": "^[+]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$",
-          "example": "+380123456789"
+          "example": "+380987654321"
         },
         "photo": {
           "title": "Photo",
