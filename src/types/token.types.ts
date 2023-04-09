@@ -1,6 +1,6 @@
 import { IUser } from "./user.types";
 
-export type IActionTokenPayload = Pick<ITokenPayload, "_id">;
+export type IActionTokenPayload = Pick<IUser, "_id">;
 
 export type ILogin = Pick<IUser, "email" | "password">;
 export interface ITokenPair {

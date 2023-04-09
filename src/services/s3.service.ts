@@ -6,6 +6,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { UploadedFile } from "express-fileupload";
+import { Types } from "mongoose";
 import { v4 } from "uuid";
 
 import { configs } from "../configs";
@@ -25,7 +26,7 @@ class S3Service {
   public async uploadPhoto(
     file: UploadedFile,
     itemType: EPhotoType,
-    itemId: string
+    itemId: Types.ObjectId | string
   ): Promise<string> {
     const filePath = this.buildPath(file.name, itemType, itemId);
 
@@ -53,7 +54,7 @@ class S3Service {
   private buildPath(
     fileName: string,
     itemType: EPhotoType,
-    itemId: string
+    itemId: string | Types.ObjectId
   ): string {
     return `${itemType}/${itemId}/${v4()}${extname(fileName)}`;
   }

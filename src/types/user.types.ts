@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 export interface IPaginationResponse<T> {
   page: number;
@@ -17,7 +17,7 @@ export interface IQuery {
 }
 
 export interface IUser {
-  _id?: string;
+  _id?: Types.ObjectId | string;
   name: string;
   email: string;
   password: string;

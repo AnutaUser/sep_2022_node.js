@@ -22,7 +22,10 @@ class CarService {
     }
   }
 
-  public async create(car: ICar, userId: string): Promise<void> {
+  public async create(
+    car: ICar,
+    userId: Types.ObjectId | string
+  ): Promise<void> {
     try {
       await Car.create({ ...car, user: new Types.ObjectId(userId) });
     } catch (e) {
@@ -37,7 +40,7 @@ class CarService {
     }
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: Types.ObjectId | string): Promise<void> {
     try {
       await Car.findByIdAndDelete(id);
     } catch (e) {

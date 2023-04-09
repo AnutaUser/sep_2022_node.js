@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 import {
   EActionTokenType,
   EEmailActions,
@@ -147,7 +149,7 @@ class AuthService {
     }
   }
 
-  public async activate(userId: string): Promise<void> {
+  public async activate(userId: string | Types.ObjectId): Promise<void> {
     try {
       await User.updateOne(
         { _id: userId },
