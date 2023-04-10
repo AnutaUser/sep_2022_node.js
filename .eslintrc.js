@@ -41,7 +41,7 @@ module.exports = {
       'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single'],
       'allowSeparatedGroups': false
     }],
-    'sort-exports/sort-exports': ['error', {'sortDir': 'asc'}]
+    'sort-exports/sort-exports': ['error', { 'sortDir': 'asc' }]
   },
   ignorePatterns: ['.eslintrc.js']
 };

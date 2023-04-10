@@ -40,11 +40,9 @@ class CarController {
   ): Promise<Response<ICommonResponse<ICar>>> {
     try {
       const { _id } = req.res.locals.jwtPayload as ITokenPayload;
-      await carService.create(req.body, _id);
+      const car = await carService.create(req.body, _id);
 
-      return res.status(201).json({
-        message: "car created",
-      });
+      return res.status(201).json(car);
     } catch (e) {
       next(e);
     }
